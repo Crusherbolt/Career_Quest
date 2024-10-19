@@ -22,7 +22,7 @@ const Home: React.FC = () => {
 
       <section className="mb-12">
         <h2 className="text-2xl font-semibold mb-6">Our Features</h2>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 ">
           <FeatureCard
             icon={<Search className="w-12 h-12 text-blue-500" />}
             title="Personalized Career Quiz"
@@ -87,10 +87,10 @@ const Home: React.FC = () => {
 };
 
 const FeatureCard: React.FC<{ icon: React.ReactNode; title: string; description: string }> = ({ icon, title, description }) => (
-  <div className="bg-white rounded-lg shadow-md p-6 flex flex-col items-center text-center">
+  <div className="bg-white rounded-lg shadow-md p-6 flex flex-col items-center text-center transition-transform transform hover:scale-110 hover:shadow-purple-400 hover:outline-purple-950 hover:bg-gray-900 hover:text-white duration-300 ease-in-out">
     <div className="mb-4">{icon}</div>
     <h3 className="text-xl font-semibold mb-2">{title}</h3>
-    <p className="text-gray-600">{description}</p>
+    <p className="text-gray-600 hover:text-white">{description}</p>
   </div>
 );
 

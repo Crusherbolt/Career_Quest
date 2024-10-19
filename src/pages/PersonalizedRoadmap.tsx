@@ -12,6 +12,16 @@ const PersonalizedRoadmap: React.FC = () => {
     { title: 'Progress Tracking', description: 'Monitor your progress and adjust your roadmap as needed.' },
   ];
 
+  // Function to handle moving to the next step
+  const handleNextStep = () => {
+    setCurrentStep((prev) => Math.min(prev + 1, steps.length));
+  };
+
+  // Function to handle moving to the previous step
+  const handlePrevStep = () => {
+    setCurrentStep((prev) => Math.max(prev - 1, 1));
+  };
+
   return (
     <div className="container mx-auto px-4 py-8">
       <h1 className="text-3xl font-bold mb-6">Your Personalized Career Roadmap</h1>
@@ -37,13 +47,35 @@ const PersonalizedRoadmap: React.FC = () => {
           </div>
         ))}
       </div>
-      <div className="text-center">
-        <button
-          className="bg-blue-500 text-white px-6 py-2 rounded-md font-semibold hover:bg-blue-600 transition duration-300"
-          onClick={() => setCurrentStep(prev => Math.min(prev + 1, steps.length))}
-        >
-          {currentStep < steps.length ? 'Next Step' : 'Complete'}
-        </button>
+
+      {/* Navigation buttons */}
+      <div className="text-center space-x-4">
+        {/* Show Previous Step button only if not on the first step */}
+        {currentStep > 1 && (
+          <button
+            className="bg-gray-500 text-white px-6 py-2 rounded-md font-semibold hover:bg-gray-600 transition duration-300"
+            onClick={handlePrevStep}
+          >
+            Previous Step
+          </button>
+        )}
+
+        {/* Show Next Step button only if not on the last step */}
+        {currentStep < steps.length && (
+          <button
+            className="bg-blue-500 text-white px-6 py-2 rounded-md font-semibold hover:bg-blue-600 transition duration-300"
+            onClick={handleNextStep}
+          >
+            Next Step
+          </button>
+        )}
+
+        {/* Show Complete button only if on the last step */}
+        {currentStep === steps.length && (
+          <button className="bg-green-500 text-white px-6 py-2 rounded-md font-semibold hover:bg-green-600 transition duration-300">
+            Complete
+          </button>
+        )}
       </div>
     </div>
   );
