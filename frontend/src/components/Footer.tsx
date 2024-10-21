@@ -13,16 +13,16 @@ const Footer: React.FC = () => {
           <div>
             <h4 className="text-lg font-semibold mb-4">Quick Links</h4>
             <ul className="space-y-2">
-              <li><Link to="/" className="text-sm hover:text-blue-400">Home</Link></li>
-              <li><Link to="/about" className="text-sm hover:text-blue-400">About Us</Link></li>
-              <li><Link to="/services" className="text-sm hover:text-blue-400">Services</Link></li>
+              <li><Link to="/" className="text-sm hover:text-blue-400  hover:underline">Home</Link></li>
+              <li><Link to="/about" className="text-sm hover:text-blue-400 hover:underline">About Us</Link></li>
+              <li><Link to="/services" className="text-sm hover:text-blue-400 hover:underline">Services</Link></li>
             </ul>
           </div>
           <div>
             <h4 className="text-lg font-semibold mb-4">Resources</h4>
             <ul className="space-y-2">
-              <li><Link to="/roadmap" className="text-sm hover:text-blue-400">Personalized Roadmap</Link></li>
-              <li><Link to="/courses" className="text-sm hover:text-blue-400">Online Courses</Link></li>
+              <li><Link to="/roadmap" className="text-sm hover:text-blue-400 hover:underline">Personalized Roadmap</Link></li>
+              <li><Link to="/courses" className="text-sm hover:text-blue-400 hover:underline">Online Courses</Link></li>
             </ul>
           </div>
           <div>

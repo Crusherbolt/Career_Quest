@@ -28,11 +28,13 @@ const Home: React.FC = () => {
             title="Personalized Career Quiz"
             description="Discover your ideal career path with our AI-powered assessment"
           />
-          <FeatureCard
-            icon={<BarChart2 className="w-12 h-12 text-green-500" />}
-            title="Job Market Analysis"
-            description="Get data-driven insights on industry trends and job opportunities"
-          />
+          <a href="..Student/Student/templates/index.html" className="block">
+            <FeatureCard
+              icon={<BarChart2 className="w-12 h-12 text-green-500" />}
+              title="Career Counselling for Students"
+              description="Get data-driven insights on industry trends and job opportunities"
+            />
+          </a>
           <FeatureCard
             icon={<DollarSign className="w-12 h-12 text-yellow-500" />}
             title="Salary Predictions"
@@ -87,10 +89,10 @@ const Home: React.FC = () => {
 };
 
 const FeatureCard: React.FC<{ icon: React.ReactNode; title: string; description: string }> = ({ icon, title, description }) => (
-  <div className="bg-white rounded-lg shadow-md p-6 flex flex-col items-center text-center transition-transform transform hover:scale-110 hover:shadow-purple-400 hover:outline-purple-950 hover:bg-gray-900 hover:text-white duration-300 ease-in-out">
+  <div className="bg-white rounded-lg p-8 text-center shadow-lg hover:bg-blue-100 hover:text-blue-800 hover:scale-105 hover:rotate-1 hover:shadow-2xl transition-transform transition-colors duration-300 cursor-pointer">
     <div className="mb-4">{icon}</div>
     <h3 className="text-xl font-semibold mb-2">{title}</h3>
-    <p className="text-gray-600 hover:text-white">{description}</p>
+    <p className="text-gray-600">{description}</p>
   </div>
 );
 
