@@ -11,6 +11,16 @@ const Services: React.FC = () => {
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
         <ServiceCard
           icon={<Search className="w-12 h-12 text-blue-500" />}
+          title="Career Counselling"
+          description="Get data-driven insights on industry trends and right path based on your interest"
+        />
+        <ServiceCard
+          icon={<Search className="w-12 h-12 text-blue-500" />}
+          title="Test your interview skills"
+          description="Take our AI-powered assessment to discover your interview skills and values."
+        />
+        <ServiceCard
+          icon={<Search className="w-12 h-12 text-blue-500" />}
           title="Career Quiz"
           description="Take our AI-powered assessment to discover career paths that align with your skills, interests, and values."
         />
