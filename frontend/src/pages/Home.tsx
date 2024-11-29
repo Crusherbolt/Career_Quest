@@ -1,9 +1,22 @@
 import React from 'react';
 import { Search, BarChart2, DollarSign, MapPin } from 'lucide-react';
+import ChatBot from '../components/ChatBot';
+import { Link, Route, Routes } from 'react-router-dom';
+import ChatBotPopup from '../components/ChatBotPopUp';
 
 const Home: React.FC = () => {
+  const navigateToChatBot = () => {
+    <ChatBot />;
+  };
+
+  const navigateToCounselling = () => {
+    window.location.href = 'http://127.0.0.1:5000/';
+  }
+
   return (
     <div className="container mx-auto px-4 py-8">
+      <ChatBotPopup />
+
       <section className="text-center mb-12">
         <h1 className="text-4xl font-bold mb-4">Welcome to Career Quest</h1>
         <p className="text-xl text-gray-600">Your ultimate career guidance platform</p>
@@ -23,11 +36,15 @@ const Home: React.FC = () => {
       <section className="mb-12">
         <h2 className="text-2xl font-semibold mb-6">Our Features</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 ">
+          <button
+          onClick={navigateToCounselling}>
           <FeatureCard
             icon={<BarChart2 className="w-12 h-12 text-green-500" />}
             title="Career Counselling for Students"
             description="Get data-driven insights on industry trends and right path based on your interest"
           />
+          </button>
+          
           <FeatureCard
             icon={<Search className="w-12 h-12 text-blue-500" />}
             title="Test Your Interview Skills"

@@ -7,6 +7,7 @@ import Services from './pages/Services';
 import PersonalizedRoadmap from './pages/PersonalizedRoadmap';
 import OnlineCourses from './pages/OnlineCourses';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import ChatBot from './components/ChatBot';
 
 function App() {
   return (
@@ -20,6 +21,7 @@ function App() {
             <Route path="/services" element={<Services />} />
             <Route path="/roadmap" element={<PersonalizedRoadmap />} />
             <Route path="/courses" element={<OnlineCourses />} />
+            <Route path='/chatbot' element={<ChatBot />}/>
           </Routes>
         </main>
         <Footer />
