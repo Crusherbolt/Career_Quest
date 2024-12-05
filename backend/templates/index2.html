@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interview Assistant</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            padding: 0;
+        }
+        h1 {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        form {
+            margin: 0 auto;
+            max-width: 500px;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+        }
+        .form-group input, .form-group select, .form-group button {
+            width: 100%;
+            padding: 10px;
+            font-size: 16px;
+        }
+        .questions, .feedback {
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Interview Assistant</h1>
+    <form id="questions-form">
+        <div class="form-group">
+            <label for="domain">Enter Domain (e.g., Web Development, Data Science):</label>
+            <input type="text" id="domain" name="domain" placeholder="Enter domain" required>
+        </div>
+        <button type="submit">Get Interview Questions</button>
+    </form>
+    <div class="questions">
+        <h2>Generated Questions:</h2>
+        <ul id="questions-list"></ul>
+    </div>
+
+    <form id="audio-form" enctype="multipart/form-data">
+        <div class="form-group">
+            <label for="question">Select a Question for Feedback:</label>
+            <select id="question" name="question" required></select>
+        </div>
+        <div class="form-group">
+            <label for="audio">Upload Your Audio Response:</label>
+            <input type="file" id="audio" name="audio" accept="audio/wav" required>
+        </div>
+        <button type="submit">Submit Audio</button>
+    </form>
+    <div class="feedback">
+        <h2>Feedback:</h2>
+        <p id="feedback-text"></p>
+    </div>
+
+    <script>
+        // Fetch interview questions
+        document.getElementById('questions-form').addEventListener('submit', async (event) => {
+            event.preventDefault();
+            const domain = document.getElementById('domain').value.trim();
+
+            if (!domain) {
+                alert('Please enter a domain.');
+                return;
+            }
+
+            const response = await fetch('/api/get-questions', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ domain }),
+            });
+            const data = await response.json();
+
+            if (data.error) {
+                alert(data.error);
+                return;
+            }
+
+            const questionsList = document.getElementById('questions-list');
+            questionsList.innerHTML = '';
+            const selectElement = document.getElementById('question');
+            selectElement.innerHTML = '';
+
+            data.questions.forEach((question, index) => {
+                const li = document.createElement('li');
+                li.textContent = question;
+                questionsList.appendChild(li);
+
+                const option = document.createElement('option');
+                option.value = question;
+                option.textContent = `Question ${index + 1}: ${question}`;
+                selectElement.appendChild(option);
+            });
+        });
+
+        // Submit audio file and get feedback
+        document.getElementById('audio-form').addEventListener('submit', async (event) => {
+            event.preventDefault();
+            const formData = new FormData();
+            const question = document.getElementById('question').value;
+            const audio = document.getElementById('audio').files[0];
+
+            if (!question || !audio) {
+                alert('Please select a question and upload an audio file.');
+                return;
+            }
+
+            formData.append('question', question);
+            formData.append('audio', audio);
+
+            const response = await fetch('/api/submit-audio', {
+                method: 'POST',
+                body: formData,
+            });
+            const data = await response.json();
+
+            if (data.error) {
+                alert(data.error);
+                return;
+            }
+
+            document.getElementById('feedback-text').textContent = data.feedback;
+        });
+    </script>
+</body>
+</html>
