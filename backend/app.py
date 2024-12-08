@@ -184,6 +184,8 @@ def predict_course(model, interests):
     predicted = model.predict(input_test)[0]
     return Course[predicted] if predicted < len(Course) else "Not Found"
 
+# result = None
+list2 = ["Vidhu Baby"]
 @app.route("/", methods=["GET", "POST"])
 def index():
     result = None
@@ -196,8 +198,68 @@ def index():
 
         if clf:
             result = predict_course(clf, interests)
-
+    list2[0] = result
+    print(list2)
     return render_template("index.html", interests=l1, result=result, accuracy=accuracy)
+
+# In-memory course data
+courses_data = {
+    'B.Tech': [
+        {
+            'name': 'Data Structures and Algorithms',
+            'category': 'Computer Science',
+            'description': 'Learn basic data structures and algorithms.'
+        },
+        {
+            'name': 'Machine Learning',
+            'category': 'Computer Science',
+            'description': 'Introduction to machine learning concepts.'
+        }
+    ],
+    'MBA': [
+        {
+            'name': 'Financial Management',
+            'category': 'Management',
+            'description': 'Learn the basics of financial management.'
+        },
+        {
+            'name': 'Marketing Strategies',
+            'category': 'Marketing',
+            'description': 'Understanding effective marketing strategies.'
+        }
+    ],
+    'BA in English': [
+        {
+            'name': 'Financial Management',
+            'category': 'Management',
+            'description': 'Learn the basics of financial management.'
+        },
+        {
+            'name': 'Marketing Strategies',
+            'category': 'Marketing',
+            'description': 'Understanding effective marketing strategies.'
+        }
+    ]
+}
+
+
+@app.route('/courses_main', methods=["GET", "POST"])
+def courses_main():
+    print(list2)
+    result1 = list2[0]
+    print(result1)
+    return render_template("index1.html", result = result1)
+
+@app.route('/api/courses', methods=['GET'])
+def get_courses():
+    degree = request.args.get('degree')
+    # Return the courses for the selected degree
+    if degree in courses_data:
+        return jsonify(courses_data[degree])
+    else:
+        return jsonify([])  # Return an empty list if degree is not found
+
+
 
 # ===================== MAIN ENTRY POINT =====================
 if __name__ == '__main__':
