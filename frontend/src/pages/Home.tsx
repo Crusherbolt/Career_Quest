@@ -17,19 +17,17 @@ const Home: React.FC = () => {
     <div className="container mx-auto px-4 py-8">
       <ChatBotPopup />
 
-      <section className="text-center mb-12">
-        <h1 className="text-4xl font-bold mb-4">Welcome to Career Quest</h1>
-        <p className="text-xl text-gray-600">Your ultimate career guidance platform</p>
-      </section>
-
       <section className="mb-12">
-        <div className="bg-white rounded-lg shadow-md p-6">
-          <h2 className="text-2xl font-semibold mb-4">Start Your Career Journey</h2>
-          <input
-            type="text"
-            placeholder="Search for careers, skills, or industries"
-            className="w-full p-3 border border-gray-300 rounded-md"
-          />
+        <div className='flex justify-around items-center bg-white flex-wrap'>
+          <div className='flex flex-col items-start p-4 w-2/5'>
+            <h1 className="text-4xl font-bold mb-4">Welcome to Career Quest</h1>
+            <p className="text-2xl text-gray-600">Your ultimate career guidance platform</p>
+            <p className='test-2xl gap-4'>Empowering individuals to navigate their career journey with confidence, unlock endless opportunities, and achieve their professional dreams through personalized guidance and resources.</p>
+            <button 
+            className='bg-blue-500 p-4 rounded-lg text-white border-black mt-4 text-2xl'
+            onClick={navigateToCounselling}>Get Your Free Guidance</button>
+          </div>
+          <img src="https://img.freepik.com/premium-vector/man-learning-put-together-puzzle-trending-concept-flat-illustration_720185-1423.jpg?semt=ais_hybrid" alt="" />
         </div>
       </section>
 
@@ -127,7 +125,9 @@ const Home: React.FC = () => {
         <div className="bg-blue-600 text-white rounded-lg shadow-md p-8 text-center">
           <h2 className="text-3xl font-bold mb-4">Ready to Start Your Career Journey?</h2>
           <p className="text-xl mb-6">Join Career Quest today and unlock your professional potential!</p>
-          <button className="bg-white text-blue-600 px-6 py-3 rounded-md font-semibold hover:bg-blue-100 transition duration-300">
+          <button 
+          className="bg-white text-blue-600 px-6 py-3 rounded-md font-semibold hover:bg-blue-100 transition duration-300"
+          onClick={navigateToCounselling}>
             Get Started
           </button>
         </div>

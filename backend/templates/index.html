@@ -129,7 +129,10 @@
 
         {% if result %}
         <h3>Predicted Course: {{ result }}</h3>
-        <p>Model Accuracy: {{ accuracy | round(2) * 100 }}%</p>
+        <!-- <p>Model Accuracy: {{ accuracy | round(2) * 100 }}%</p> -->
+        <a href="http://127.0.0.1:5000/generate-questions">
+            <button>Next</button>
+        </a>
         {% endif %}
 
     </div>

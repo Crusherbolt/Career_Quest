@@ -2,10 +2,12 @@ import { useState } from "react"
 import axios from "axios"
 import ReactMarkdown from "react-markdown"
 
+
 function ChatBot() {
     const [question, setQuestion] = useState("");
     const [answer, setAnswer] = useState("");
     const [generatingAnswer, setGeneratingAnswer] = useState(false);
+    const API_KEY = import.meta.env.VITE_API_GEMINI_API_KEY;
   
     async function generateAnswer(e) {
       setGeneratingAnswer(true);
@@ -13,7 +15,7 @@ function ChatBot() {
       setAnswer("Loading your answer... \n It might take up to 10 seconds");
       try {
         const response = await axios({
-          url: `https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key=AIzaSyC1d3uER9eKSxpSmYM-eE0__yj1byMJrDA`,
+          url: `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent?key=${API_KEY}`,
           method: "post",
           data: {
             contents: [{ parts: [{ text: question }] }],
