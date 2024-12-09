@@ -9,8 +9,66 @@ from sklearn.model_selection import train_test_split
 from sklearn.metrics import accuracy_score
 import speech_recognition as sr
 from dotenv import load_dotenv
+from sklearn.feature_extraction.text import TfidfVectorizer
+from sklearn.metrics.pairwise import sigmoid_kernel
+import difflib
+from markupsafe import Markup
 
 load_dotenv()
+
+
+
+
+def create_sim(search):
+    df_org=pd.read_csv('Courser.csv')
+    df=df_org.copy()
+    df.drop(['University','Difficulty Level','Course Rating','Course URL','Course Description'], axis=1,inplace=True)
+    tfv = TfidfVectorizer(min_df=3,  max_features=None, 
+            strip_accents='unicode', analyzer='word',token_pattern=r'\w{1,}',
+            ngram_range=(1, 3),
+            stop_words = 'english')
+
+    # Filling NaNs with empty string
+    df['cleaned'] = df['Skills'].fillna('')
+    # Fitting the TF-IDF on the 'cleaned' text
+    tfv_matrix = tfv.fit_transform(df['cleaned'])
+    # Compute the sigmoid kernel
+    sig = sigmoid_kernel(tfv_matrix, tfv_matrix)
+    # Reverse mapping of indices and titles
+    indices = pd.Series(df.index, index=df['Course Name']).drop_duplicates()
+    
+    def give_rec(title, sig=sig):
+        # Get the index corresponding to original_title
+        idx = indices[title]
+
+        # Get the pairwsie similarity scores 
+        sig_scores = list(enumerate(sig[idx]))
+
+        # Sort the courses
+        sig_scores = sorted(sig_scores, key=lambda x: x[1], reverse=True)
+
+        # Scores of the 10 most similar courses
+        sig_scores = sig_scores[1:11]
+
+        # courses indices
+        course_indices = [i[0] for i in sig_scores]
+
+        # Top 10 most similar courses
+        return df_org.iloc[course_indices]
+
+    namelist=df['Course Name'].tolist()
+    word=search
+    simlist=difflib.get_close_matches(word, namelist)
+    try: 
+        findf=give_rec(simlist[0])
+        findf=findf.reset_index(drop=True)
+    except:
+        findf=pd.DataFrame()
+    
+    return findf
+
+
+
 
 app = Flask(__name__)
 
@@ -204,40 +262,448 @@ def index():
 
 # In-memory course data
 courses_data = {
-    'B.Tech': [
+    'BBA- Bachelor of Business Administration': [
+        {
+            'name': 'Principles of Management',
+            'category': 'Management',
+            'description': 'Introduction to management principles and practices.'
+        },
+        {
+            'name': 'Business Analytics',
+            'category': 'Analytics',
+            'description': 'Basics of business data analysis and decision-making.'
+        }
+    ],
+    'BEM- Bachelor of Event Management': [
+        {
+            'name': 'Event Planning and Coordination',
+            'category': 'Event Management',
+            'description': 'Learn to organize and execute events successfully.'
+        },
+        {
+            'name': 'Marketing for Events',
+            'category': 'Marketing',
+            'description': 'Understanding promotion strategies for events.'
+        }
+    ],
+    'Integrated Law Course- BA + LL.B': [
+        {
+            'name': 'Constitutional Law',
+            'category': 'Law',
+            'description': 'Understanding the framework of constitutional governance.'
+        },
+        {
+            'name': 'Legal Drafting and Advocacy',
+            'category': 'Law',
+            'description': 'Learn effective legal drafting and advocacy skills.'
+        }
+    ],
+    'BJMC- Bachelor of Journalism and Mass Communication': [
+        {
+            'name': 'Media Ethics and Laws',
+            'category': 'Journalism',
+            'description': 'Introduction to ethical practices and media regulations.'
+        },
+        {
+            'name': 'Broadcast Journalism',
+            'category': 'Mass Communication',
+            'description': 'Basics of television and radio journalism.'
+        }
+    ],
+    'BFD- Bachelor of Fashion Designing': [
+        {
+            'name': 'Textile Science',
+            'category': 'Fashion Design',
+            'description': 'Study the properties and uses of various textiles.'
+        },
+        {
+            'name': 'Apparel Design',
+            'category': 'Fashion Design',
+            'description': 'Learn to create and design apparel collections.'
+        }
+    ],
+    'B.Tech.-Computer Science and Engineering': [
         {
             'name': 'Data Structures and Algorithms',
             'category': 'Computer Science',
             'description': 'Learn basic data structures and algorithms.'
         },
         {
-            'name': 'Machine Learning',
+            'name': 'Operating Systems',
             'category': 'Computer Science',
-            'description': 'Introduction to machine learning concepts.'
+            'description': 'Study the fundamentals of operating system design.'
         }
     ],
-    'MBA': [
+    'B.Sc.- Information Technology': [
         {
-            'name': 'Financial Management',
-            'category': 'Management',
-            'description': 'Learn the basics of financial management.'
+            'name': 'Database Management Systems',
+            'category': 'Information Technology',
+            'description': 'Introduction to database design and management.'
         },
         {
-            'name': 'Marketing Strategies',
-            'category': 'Marketing',
-            'description': 'Understanding effective marketing strategies.'
+            'name': 'Networking Basics',
+            'category': 'Information Technology',
+            'description': 'Learn the essentials of computer networks.'
+        }
+    ],
+    'B.Sc.- Nursing': [
+        {
+            'name': 'Anatomy and Physiology',
+            'category': 'Healthcare',
+            'description': 'Detailed study of the human body.'
+        },
+        {
+            'name': 'Nursing Fundamentals',
+            'category': 'Healthcare',
+            'description': 'Introduction to basic nursing practices and ethics.'
+        }
+    ],
+    'MBBS': [
+        {
+            'name': 'Human Anatomy',
+            'category': 'Medicine',
+            'description': 'Comprehensive study of human anatomy.'
+        },
+        {
+            'name': 'Clinical Medicine',
+            'category': 'Medicine',
+            'description': 'Basics of diagnosing and treating illnesses.'
+        }
+    ],
+    'B.Arch- Bachelor of Architecture': [
+        {
+            'name': 'Architectural Design',
+            'category': 'Architecture',
+            'description': 'Learn principles and techniques of architectural design.'
+        },
+        {
+            'name': 'Building Construction',
+            'category': 'Architecture',
+            'description': 'Study materials and methods of building construction.'
+        }
+    ],
+    'B.Pharm- Bachelor of Pharmacy': [
+        {
+            'name': 'Pharmaceutical Chemistry',
+            'category': 'Pharmacy',
+            'description': 'Study the chemical properties of medicinal compounds.'
+        },
+        {
+            'name': 'Pharmacology',
+            'category': 'Pharmacy',
+            'description': 'Understand the effects of drugs on biological systems.'
+        }
+    ],
+    'BDS- Bachelor of Dental Surgery': [
+        {
+            'name': 'Oral Anatomy',
+            'category': 'Dentistry',
+            'description': 'Detailed study of oral and dental anatomy.'
+        },
+        {
+            'name': 'Prosthodontics',
+            'category': 'Dentistry',
+            'description': 'Learn the techniques of dental prosthetics.'
+        }
+    ],
+    'Animation, Graphics and Multimedia': [
+        {
+            'name': '3D Animation Basics',
+            'category': 'Design',
+            'description': 'Introduction to 3D modeling and animation.'
+        },
+        {
+            'name': 'Graphic Design',
+            'category': 'Design',
+            'description': 'Learn the principles of visual communication design.'
+        }
+    ],
+    'B.Sc.- Physics': [
+        {
+            'name': 'Classical Mechanics',
+            'category': 'Physics',
+            'description': 'Understand the motion of objects under various forces.'
+        },
+        {
+            'name': 'Quantum Physics',
+            'category': 'Physics',
+            'description': 'Study the behavior of matter at atomic scales.'
+        }
+    ],
+    'B.Sc.- Chemistry': [
+        {
+            'name': 'Organic Chemistry',
+            'category': 'Chemistry',
+            'description': 'Study the structure and reactions of organic compounds.'
+        },
+        {
+            'name': 'Physical Chemistry',
+            'category': 'Chemistry',
+            'description': 'Understand the physical properties of matter.'
+        }
+    ],
+    'B.Sc.- Mathematics': [
+        {
+            'name': 'Linear Algebra',
+            'category': 'Mathematics',
+            'description': 'Explore vector spaces and linear mappings.'
+        },
+        {
+            'name': 'Calculus',
+            'category': 'Mathematics',
+            'description': 'Study limits, functions, derivatives, and integrals.'
+        }
+    ],
+    'BA in Economics': [
+        {
+            'name': 'Microeconomics',
+            'category': 'Economics',
+            'description': 'Study individual and business-level economic behavior.'
+        },
+        {
+            'name': 'Macroeconomics',
+            'category': 'Economics',
+            'description': 'Understand economy-wide phenomena like inflation and GDP.'
+        }
+    ],
+    'CA- Chartered Accountancy': [
+        {
+            'name': 'Accounting Standards',
+            'category': 'Finance',
+            'description': 'Learn the principles and rules of financial reporting.'
+        },
+        {
+            'name': 'Taxation Laws',
+            'category': 'Finance',
+            'description': 'Understand the framework of direct and indirect taxes.'
+        }
+    ],
+    'CS- Company Secretary': [
+        {
+            'name': 'Corporate Governance',
+            'category': 'Business',
+            'description': 'Study laws and policies guiding corporate operations.'
+        },
+        {
+            'name': 'Company Law',
+            'category': 'Business',
+            'description': 'Understand legal aspects of company formation and management.'
+        }
+    ],
+    'Civil Services': [
+        {
+            'name': 'Indian Polity',
+            'category': 'Public Administration',
+            'description': 'Understand the structure and functions of the Indian government.'
+        },
+        {
+            'name': 'Current Affairs',
+            'category': 'General Knowledge',
+            'description': 'Stay updated with global and national developments.'
+        }
+    ],
+    'Diploma in Dramatic Arts': [
+        {
+            'name': 'Acting Techniques',
+            'category': 'Performing Arts',
+            'description': 'Learn methods to portray characters effectively.'
+        },
+        {
+            'name': 'Stage Design',
+            'category': 'Performing Arts',
+            'description': 'Study the principles of designing and managing stage settings.'
+        }
+    ],
+    'B.Ed.': [
+        {
+            'name': 'Educational Psychology',
+            'category': 'Education',
+            'description': 'Understand the psychological principles in education.'
+        },
+        {
+            'name': 'Pedagogy and Learning Methods',
+            'category': 'Education',
+            'description': 'Explore effective teaching and learning techniques.'
+        }
+    ],
+    'BTTM- Bachelor of Travel and Tourism Management': [
+        {
+            'name': 'Tourism Geography',
+            'category': 'Travel and Tourism',
+            'description': 'Understand the geographical aspects of tourism destinations.'
+        },
+        {
+            'name': 'Hospitality Management',
+            'category': 'Travel and Tourism',
+            'description': 'Learn the basics of managing hospitality services.'
+        }
+    ],
+    'BVA- Bachelor of Visual Arts': [
+        {
+            'name': 'Drawing and Illustration',
+            'category': 'Visual Arts',
+            'description': 'Learn techniques for creating illustrations and drawings.'
+        },
+        {
+            'name': 'Art History',
+            'category': 'Visual Arts',
+            'description': 'Explore the evolution of art across cultures and periods.'
+        }
+    ],
+    'BA in History': [
+        {
+            'name': 'Ancient History of India',
+            'category': 'History',
+            'description': 'Study the early civilizations and historical developments in India.'
+        },
+        {
+            'name': 'World Wars and Modern History',
+            'category': 'History',
+            'description': 'Understand the causes and impacts of major world conflicts.'
+        }
+    ],
+    'B.Com- Bachelor of Commerce': [
+        {
+            'name': 'Financial Accounting',
+            'category': 'Commerce',
+            'description': 'Learn the fundamentals of financial record-keeping and reporting.'
+        },
+        {
+            'name': 'Business Law',
+            'category': 'Commerce',
+            'description': 'Understand the legal principles affecting business operations.'
+        }
+    ],
+    'B.Tech.-Civil Engineering': [
+        {
+            'name': 'Structural Analysis',
+            'category': 'Civil Engineering',
+            'description': 'Learn methods for analyzing and designing structures.'
+        },
+        {
+            'name': 'Surveying and Geomatics',
+            'category': 'Civil Engineering',
+            'description': 'Study techniques for land measurement and mapping.'
+        }
+    ],
+    'B.Tech.-Electrical and Electronics Engineering': [
+        {
+            'name': 'Circuit Theory',
+            'category': 'Electrical Engineering',
+            'description': 'Understand the principles of electrical circuits and systems.'
+        },
+        {
+            'name': 'Power Systems',
+            'category': 'Electrical Engineering',
+            'description': 'Learn the fundamentals of electrical power generation and distribution.'
+        }
+    ],
+    'B.Tech.-Electronics and Communication Engineering': [
+        {
+            'name': 'Digital Signal Processing',
+            'category': 'Electronics Engineering',
+            'description': 'Study methods for processing and analyzing signals digitally.'
+        },
+        {
+            'name': 'Communication Systems',
+            'category': 'Electronics Engineering',
+            'description': 'Understand the design and working of modern communication systems.'
+        }
+    ],
+    'B.Tech.-Mechanical Engineering': [
+        {
+            'name': 'Thermodynamics',
+            'category': 'Mechanical Engineering',
+            'description': 'Explore the principles of energy conversion and heat transfer.'
+        },
+        {
+            'name': 'Manufacturing Processes',
+            'category': 'Mechanical Engineering',
+            'description': 'Learn techniques for designing and manufacturing products.'
         }
     ],
     'BA in English': [
         {
-            'name': 'Financial Management',
-            'category': 'Management',
-            'description': 'Learn the basics of financial management.'
+            'name': 'Literary Theory',
+            'category': 'English Literature',
+            'description': 'Understand critical theories for analyzing literature.'
         },
         {
-            'name': 'Marketing Strategies',
-            'category': 'Marketing',
-            'description': 'Understanding effective marketing strategies.'
+            'name': 'Creative Writing',
+            'category': 'English',
+            'description': 'Learn techniques to craft engaging and effective writing.'
+        }
+    ],
+    'BA in Hindi': [
+        {
+            'name': 'Hindi Literature and Poetry',
+            'category': 'Hindi',
+            'description': 'Study classic and modern works of Hindi literature.'
+        },
+        {
+            'name': 'Grammar and Linguistics',
+            'category': 'Hindi',
+            'description': 'Understand the structure and usage of the Hindi language.'
+        }
+    ],
+    'MBBS': [
+        {
+            'name': 'Anatomy',
+            'category': 'Medical Science',
+            'description': 'Study the structure of the human body.'
+        },
+        {
+            'name': 'Pathology',
+            'category': 'Medical Science',
+            'description': 'Understand the mechanisms of diseases in humans.'
+        }
+    ],
+    'B.Sc- Nursing': [
+        {
+            'name': 'Clinical Nursing',
+            'category': 'Healthcare',
+            'description': 'Learn the practical aspects of nursing care.'
+        },
+        {
+            'name': 'Community Health Nursing',
+            'category': 'Healthcare',
+            'description': 'Focus on public health and preventive care.'
+        }
+    ],
+    'B.Arch- Bachelor of Architecture': [
+        {
+            'name': 'Architectural Design',
+            'category': 'Architecture',
+            'description': 'Learn to design functional and aesthetically pleasing structures.'
+        },
+        {
+            'name': 'Building Construction',
+            'category': 'Architecture',
+            'description': 'Study the principles of construction materials and techniques.'
+        }
+    ],
+    'B.Sc.- Information Technology': [
+        {
+            'name': 'Database Management Systems',
+            'category': 'IT',
+            'description': 'Learn to design, implement, and manage databases.'
+        },
+        {
+            'name': 'Cybersecurity',
+            'category': 'IT',
+            'description': 'Understand methods to protect systems and networks from cyber threats.'
+        }
+    ],
+    'B.Sc- Applied Geology': [
+        {
+            'name': 'Mineralogy',
+            'category': 'Geology',
+            'description': 'Study minerals, their properties, and classifications.'
+        },
+        {
+            'name': 'Petrology',
+            'category': 'Geology',
+            'description': 'Understand the formation and composition of rocks.'
         }
     ]
 }
@@ -258,6 +724,27 @@ def get_courses():
         return jsonify(courses_data[degree])
     else:
         return jsonify([])  # Return an empty list if degree is not found
+
+
+
+@app.route('/coursera')
+def hello_world():
+    return render_template("index3.html")
+
+@app.route('/predict',methods=['POST','GET'])
+def predict():
+    if (request.method == 'POST'):
+        namec=(request.form['course'])
+    
+    output=create_sim(namec)
+    if output.empty:
+        ms='Sorry! we did not find any matching courses, Try adding more keywords in your search.'
+        ht=' '
+    else:
+        ht=output.to_html(render_links=True, index=True)
+        ht= Markup(ht)
+        ms='Here are some recommendations :'
+    return render_template('index3.html',message=ms,pred=ht)
 
 
 

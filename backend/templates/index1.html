@@ -63,6 +63,9 @@
           if (courses.length === 0) {
             coursesDiv.innerHTML = `
               <p>No courses found for this degree.</p>
+              <a href="http://127.0.0.1:5000/coursera">
+                <button>Get Courses</button>
+              </a>
               <a href="http://127.0.0.1:5000/generate-questions">
                 <button>Test Your Interview Skills</button>
               </a>
@@ -82,6 +85,9 @@
               coursesDiv.appendChild(courseDiv);
             });
             coursesDiv.innerHTML += `
+              <a href="http://127.0.0.1:5000/coursera">
+                <button>Get Courses</button>
+              </a>
               <a href="http://127.0.0.1:5000/generate-questions">
                 <button>Test Your Interview Skills</button>
               </a>
