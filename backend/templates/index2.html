@@ -110,6 +110,8 @@
         #feedback-text {
             font-size: 18px;
             color: #0047AB;
+            display: flex;
+            flex-direction: column;
         }
 
         /* Responsive Design */
@@ -224,7 +226,12 @@
                 return;
             }
 
-            document.getElementById('feedback-text').textContent = data.feedback;
+            document.getElementById('feedback-text').innerHTML = `
+                ${data.feedback}
+                <a href="http://localhost:5173/">
+                    <button>Exit</button>
+                </a>
+            `
         });
     </script>
 </body>

@@ -34,34 +34,25 @@ const Home: React.FC = () => {
       <section className="mb-12">
         <h2 className="text-2xl font-semibold mb-6">Our Features</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 ">
-          <button
-          onClick={navigateToCounselling}>
           <FeatureCard
             icon={<BarChart2 className="w-12 h-12 text-green-500" />}
             title="Career Counselling for Students"
             description="Get data-driven insights on industry trends and right path based on your interest"
           />
-          </button>
-          
-          <FeatureCard
-            icon={<Search className="w-12 h-12 text-blue-500" />}
-            title="Test Your Interview Skills"
-            description="Discover your communication skills with our AI-powered assessment"
-          />
-          <FeatureCard
-            icon={<Search className="w-12 h-12 text-blue-500" />}
-            title="Personalized Career Quiz"
-            description="Discover your ideal career path with our AI-powered assessment"
-          />
-          <FeatureCard
-            icon={<DollarSign className="w-12 h-12 text-yellow-500" />}
-            title="Salary Predictions"
-            description="Accurate salary forecasts based on your skills and experience"
-          />
           <FeatureCard
             icon={<MapPin className="w-12 h-12 text-red-500" />}
             title="Career Roadmaps"
             description="Tailored guidance to achieve your professional goals"
+          />
+          <FeatureCard
+            icon={<Search className="w-12 h-12 text-blue-500" />}
+            title="Courses Recommendations"
+            description="Discover your ideal career path with our AI-powered courses"
+          />
+          <FeatureCard
+            icon={<Search className="w-12 h-12 text-blue-500" />}
+            title="Test Your Interview Skills"
+            description="Discover your communication skills with our AI-powered assessment"
           />
         </div>
       </section>

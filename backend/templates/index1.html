@@ -61,7 +61,15 @@
           const coursesDiv = document.getElementById('courses');
           coursesDiv.innerHTML = '';
           if (courses.length === 0) {
-            coursesDiv.innerHTML = '<p>No courses found for this degree.</p>';
+            coursesDiv.innerHTML = `
+              <p>No courses found for this degree.</p>
+              <a href="http://127.0.0.1:5000/generate-questions">
+                <button>Test Your Interview Skills</button>
+              </a>
+              <a href="http://localhost:5173/">
+                <button>Exit</button>
+              </a>
+            `;
           } else {
             courses.forEach(course => {
               const courseDiv = document.createElement('div');
@@ -73,6 +81,14 @@
               `;
               coursesDiv.appendChild(courseDiv);
             });
+            coursesDiv.innerHTML += `
+              <a href="http://127.0.0.1:5000/generate-questions">
+                <button>Test Your Interview Skills</button>
+              </a>
+              <a href="http://localhost:5173/">
+                <button>Exit</button>
+              </a>
+            `;
           }
         })
         .catch(error => {
